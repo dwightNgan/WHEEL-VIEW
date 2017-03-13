@@ -193,14 +193,16 @@ class AppComponent extends React.Component {
     let obj = {};
     obj.move = true;
     obj.transition = '';
-    obj[this.linkageDataType + 'TranslateYStart'] = e.pageY;
+    obj[this.linkageDataType + 'TranslateYStart'] = e.pageY;//click事件
+    obj[this.linkageDataType + 'TranslateYStart'] = e.touches[0].clientY;//touch事件
     this.setState(obj);
   }
 
   handleMouseMove(e) {
-    if (this.state.move && e.pageY) {
+    if (this.state.move && (e.pageY || e.touches[0].clientY)) {
+      let disY=e.pageY || e.touches[0].clientY;
       let obj = {};
-      obj[this.linkageDataType + 'TranslateY'] = e.pageY - this.state[this.linkageDataType + 'TranslateYStart'] + this.state[this.linkageDataType + 'TranslateYEnd'];
+      obj[this.linkageDataType + 'TranslateY'] = disY - this.state[this.linkageDataType + 'TranslateYStart'] + this.state[this.linkageDataType + 'TranslateYEnd'];
       this.setState(obj)
     }
   }
@@ -301,16 +303,25 @@ class AppComponent extends React.Component {
           <div className="cover">
             <div
               data-type='First'
+              onTouchStart={this.handleMouseDown.bind(this)}
+              onTouchMove={this.handleMouseMove.bind(this)}
+              onTouchEnd={this.handleMouseUp.bind(this)}
               onMouseDown={this.handleMouseDown.bind(this)}
               onMouseMove={this.handleMouseMove.bind(this)}
               onMouseUp={this.handleMouseUp.bind(this)}></div>
             <div
               data-type='Second'
+              onTouchStart={this.handleMouseDown.bind(this)}
+              onTouchMove={this.handleMouseMove.bind(this)}
+              onTouchEnd={this.handleMouseUp.bind(this)}
               onMouseDown={this.handleMouseDown.bind(this)}
               onMouseMove={this.handleMouseMove.bind(this)}
               onMouseUp={this.handleMouseUp.bind(this)}></div>
             <div
               data-type='Third'
+              onTouchStart={this.handleMouseDown.bind(this)}
+              onTouchMove={this.handleMouseMove.bind(this)}
+              onTouchEnd={this.handleMouseUp.bind(this)}
               onMouseDown={this.handleMouseDown.bind(this)}
               onMouseMove={this.handleMouseMove.bind(this)}
               onMouseUp={this.handleMouseUp.bind(this)}></div>
