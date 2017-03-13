@@ -151,11 +151,25 @@ class AppComponent extends React.Component {
    *   type:改变的选择器的类型('First','Second','Third',类型string)
    *   index:被选中的选项的序号(类型number)
    * */
-  handlePickerChange(type, index) {
+  handlePickerChange(type) {
+
+    let ty,
+      linkageData=this.state.linkageData,
+      FirstIdx=this.state.FirstIdx,
+      SecondIdx=this.state.SecondIdx;
+    if (this.state[type + 'TranslateY'] > 0) {
+      ty = 0;
+    } else {
+      ty =Math.abs(Math.ceil((this.state[type + 'TranslateY'] - 24) / 48));
+    }
+    console.log(ty);
     switch (type) {
       case 'First'://处理一级选择器的改变
+        if(ty>linkageData.length){
+          ty=linkageData.length-1
+        }
         this.setState({
-          FirstIdx: index,//被选中的一级
+          FirstIdx: ty,//被选中的一级
           SecondTranslateYEnd: 0,//以下为还原二级和三级位移和被选中设置
           SecondTranslateY: 0,
           ThirdTranslateYEnd: 0,
@@ -165,18 +179,26 @@ class AppComponent extends React.Component {
         });
         break;
       case 'Second'://处理二级选择器的改变
+        if(ty>linkageData[FirstIdx].Second.length){
+          ty=linkageData[FirstIdx].Second.length-1
+        }
         this.setState({
-          SecondIdx: index,//被选中的二级
+          SecondIdx: ty,//被选中的二级
           ThirdTranslateYEnd: 0,//以下为还原三级位移和被选中设置
           ThirdTranslateY: 0,
           ThirdIdx: 0
         });
         break;
       case 'Third'://处理三级选择器的改变
-        this.setState({ThirdIdx: index});//被选中的三级
+        if(ty>linkageData[FirstIdx].Second[SecondIdx].Third.length){
+          ty=linkageData[FirstIdx].Second[SecondIdx].Third.length-1
+        }
+        this.setState({ThirdIdx: ty});//被选中的三级
         break
 
     }
+
+    return -ty
   }
 
   /*
@@ -208,13 +230,8 @@ class AppComponent extends React.Component {
   }
 
   handleMouseUp() {
-    let ty;
-    if (this.state[this.linkageDataType + 'TranslateY'] > 0) {
-      ty = 0;
-    } else {
-      ty = Math.ceil((this.state[this.linkageDataType + 'TranslateY'] - 24) / 48);
-    }
-    this.handlePickerChange(this.linkageDataType, Math.abs(ty));
+
+    let ty=this.handlePickerChange(this.linkageDataType);
     let obj = {};
     obj.move = false;
     obj[this.linkageDataType + 'TranslateYEnd'] = ty * 48;
